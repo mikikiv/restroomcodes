@@ -1,5 +1,3 @@
-# Mantine Next Template
+# RestroomCodes
 
-Get started with the template by clicking `Use this template` button on the top of the page.
-
-[Documentation](https://mantine.dev/guides/next/)
+A database of public restroom codes and availability
