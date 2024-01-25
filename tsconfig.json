@@ -1,11 +1,13 @@
 {
   "compilerOptions": {
-    "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "target": "ES2015",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "baseUrl": ".",
+    "paths": {
+      "@/lib/*": ["./app/_lib/*"],
+      "@/hooks/*": ["./app/_hooks/*"],
+      "@/components/*": ["./app/_components/*"]
+    },
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,

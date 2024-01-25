@@ -12,13 +12,14 @@ datasource db {
 }
 
 model BathroomCode {
-  id           Int      @id @default(autoincrement())
-  codeRequired Boolean  @default(false)
+  id           Int       @id @default(autoincrement())
+  codeRequired Boolean   @default(false)
   code         String?
-  valid        Boolean  @default(true)
-  verified     Boolean  @default(false)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  valid        Boolean   @default(true)
+  verified     Boolean   @default(false)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  deletedAt    DateTime?
 }
 
 model Location {
