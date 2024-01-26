@@ -1,5 +1,5 @@
 import { Paper, Table, TableData, Text } from "@mantine/core"
-import { getCodes } from "@/hooks/apis"
+import { getCodes } from "@/hooks/hooks"
 import { BathroomCode } from "@prisma/client"
 
 const DisplayCodes = async () => {
@@ -11,7 +11,7 @@ const DisplayCodes = async () => {
 		body: codes.map((code: BathroomCode) => {
 			return [
 				code.code,
-				code.codeRequired,
+				code.codeRequired.toString(),
 				code.createdAt.toLocaleString(),
 				code.updatedAt.toLocaleString(),
 				code.valid,
@@ -22,7 +22,6 @@ const DisplayCodes = async () => {
 
 	return (
 		<Paper>
-			<Text>Display Codes</Text>
 			<Table data={tableData} />
 		</Paper>
 	)

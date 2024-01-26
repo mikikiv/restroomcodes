@@ -5,9 +5,9 @@ import DisplayCodes from "./_components/DisplayCodes"
 export default function HomePage() {
 	return (
 		<>
-			<Container maw={400} p={"lg"}>
+			<Container p={"lg"}>
 				<Stack gap={30}>
-					<CreateCode />
+					<CreateCode maw={400} mx={"auto"} />
 					<DisplayCodes />
 				</Stack>
 			</Container>

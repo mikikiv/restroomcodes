@@ -1,35 +1,62 @@
 "use client"
-import { Box, Button, Paper, Text, TextInput } from "@mantine/core"
-
+import {
+	Box,
+	Button,
+	Paper,
+	Radio,
+	RadioGroup,
+	Text,
+	TextInput,
+} from "@mantine/core"
+import { useForm } from "@mantine/form"
+import { createCode } from "@/hooks/hooks"
 import { useState } from "react"
-import { createCode } from "../_hooks/apis"
 
-const CreateCode = () => {
-	const [code, setCode] = useState("")
+const CreateCode = ({ ...rest }) => {
+	const form = useForm({
+		initialValues: {
+			code: "",
+			codeRequired: true,
+		},
+	})
 
-	const submitCode = async (code: string) => {
-		await createCode(code)
-		setCode("")
+	const handleSubmit = async () => {
+		const data = new FormData()
+
+		for (const [key, value] of Object.entries(form.values)) {
+			if (!value) continue
+			data.append(key, value.toString())
+		}
+		try {
+			const res = await createCode(data)
+			//@ts-expect-error
+			if (!res?.ok) {
+				throw new Error("Failed to create code")
+			}
+			form.reset()
+			return "submitted"
+			//@todo: add toast
+		} catch (error) {
+			console.error(error)
+		}
 	}
 	return (
-		<Paper>
+		<Paper {...rest}>
 			<Text>Report a new code</Text>
 			<Box>
 				<TextInput
 					w={"100%"}
 					placeholder="1234"
-					value={code}
-					onChange={(e) => {
-						setCode(e.currentTarget.value)
-					}}
+					{...form.getInputProps("code")}
 				/>
-				<Button
-					fullWidth
-					mt={"sm"}
-					onClick={() => {
-						submitCode(code)
-					}}
+				<RadioGroup
+					withAsterisk
+					{...form.getInputProps("codeRequired", { type: "checkbox" })}
 				>
+					<Radio value="required" label="Code is required" />
+					<Radio value="notRequired" label="Code is not required" />
+				</RadioGroup>
+				<Button fullWidth mt={"sm"} onClick={() => handleSubmit()}>
 					Create Code
 				</Button>
 			</Box>

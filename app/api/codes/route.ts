@@ -58,9 +58,18 @@ export async function POST(req: NextRequest) {
 	const data: any = {}
 
 	for (const [key, value] of formData.entries()) {
-		if (value !== null && value !== "") {
-			data[key] = value
+		if (value == null) {
+			break
 		}
+		if (value === "true" || value === "required") {
+			data[key] = true
+			break
+		}
+		if (value === "false" || value === "notRequired") {
+			data[key] = false
+			break
+		}
+		data[key] = value
 	}
 
 	const bathroomCode = await prisma.bathroomCode.create({

@@ -8,18 +8,17 @@ export const getCodes = async () => {
 	}
 }
 
-export const createCode = async (input: string) => {
-	const data = new FormData()
-
-	data.append("code", input)
-
+export const createCode = async (input: FormData) => {
 	try {
 		const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/codes`, {
 			method: "POST",
-			body: data,
+			body: input,
 		})
-		console.log(await response.json())
+		if (!response.ok) {
+			throw new Error(`Submission error code: ${response.status}`)
+		}
+		return response
 	} catch (error) {
-		console.log(error)
+		return await error
 	}
 }
