@@ -2,14 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import prisma from "@/lib/prismadb"
 
 export async function GET(req: NextRequest) {
-	const searchableParams = [
-		"id",
-		"code",
-		"codeRequired",
-		"valid",
-		"verified",
-		"locationId",
-	]
+	const searchableParams = ["id", "name", "city", "zipcode", "state"]
 	if (searchableParams.some((param) => req.nextUrl.searchParams.has(param))) {
 		const searchParams = req.nextUrl.searchParams
 
@@ -25,60 +18,58 @@ export async function GET(req: NextRequest) {
 			}
 		}
 
-		const codes = await prisma.bathroomCode.findMany({
+		const locations = await prisma.location.findMany({
 			orderBy: {
 				id: "desc",
 			},
 			where: whereQuery,
 		})
-		if (codes.length === 0) {
+		if (locations.length === 0) {
 			return NextResponse.json({ error: "No matches" }, { status: 404 })
 		}
-		return NextResponse.json(codes)
+		return NextResponse.json(locations)
 	}
 
-	const codes = await prisma.bathroomCode.findMany({
+	const locations = await prisma.location.findMany({
 		orderBy: {
 			createdAt: "desc",
 		},
 	})
-	return NextResponse.json(codes)
+	return NextResponse.json(locations)
 }
 
 export async function POST(req: NextRequest) {
 	const formData = await req.formData()
-	const code = formData.get("code")
-	const codeRequired = formData.get("codeRequired")
+	const requiredLocationData: { [key: string]: FormDataEntryValue | null } = {
+		city: formData.get("city"),
+		state: formData.get("state"),
+		name: formData.get("name"),
+	}
+	const optionalLocationData = {
+		address: formData.get("address"),
+		zipcode: formData.get("zipcode"),
+	}
 
-	if (
-		(code === undefined || code === "") &&
-		(codeRequired === undefined || codeRequired === "")
-	) {
-		new NextResponse()
-		return NextResponse.json({ error: "Invalid code" }, { status: 406 })
+	// if missing a required field, return an error which tells the user which field is missing
+	for (const [key, value] of Object.entries(requiredLocationData)) {
+		if (value === null) {
+			return NextResponse.json({ error: `${key} is required` }, { status: 406 })
+		}
 	}
 
 	const data: any = {}
 
 	for (const [key, value] of formData.entries()) {
-		if (value == null) {
-			break
-		}
-		if (value === "true" || value === "required") {
-			data[key] = true
-			break
-		}
-		if (value === "false" || value === "notRequired") {
-			data[key] = false
-			break
+		if (typeof value === "string" && (value == null || value?.trim() === "")) {
+			return NextResponse.json({ error: `${key} is required` }, { status: 406 })
 		}
 		data[key] = value
 	}
 
-	const bathroomCode = await prisma.bathroomCode.create({
+	const location = await prisma.location.create({
 		data,
 	})
-	return NextResponse.json(bathroomCode)
+	return NextResponse.json(location)
 }
 
 export async function DELETE(req: NextRequest) {
@@ -87,7 +78,7 @@ export async function DELETE(req: NextRequest) {
 		return NextResponse.json({ error: "Invalid id" }, { status: 406 })
 	}
 	try {
-		const code = await prisma.bathroomCode.update({
+		const locations = await prisma.location.update({
 			where: {
 				id: Number(id),
 				deletedAt: null,
@@ -96,10 +87,10 @@ export async function DELETE(req: NextRequest) {
 				deletedAt: new Date(),
 			},
 		})
-		return NextResponse.json(code)
+		return NextResponse.json(locations)
 	} catch (error) {
 		return NextResponse.json(
-			{ error: "Code not found or already deleted" },
+			{ error: "Location not found or already deleted" },
 			{ status: 404 },
 		)
 	}
@@ -109,7 +100,7 @@ export async function PUT(req: NextRequest) {
 	const formData = await req.formData()
 	const id = formData.get("id")
 
-	if (id == null) {
+	if (id === null) {
 		return NextResponse.json({ error: "Invalid id" }, { status: 406 })
 	}
 
@@ -119,23 +110,18 @@ export async function PUT(req: NextRequest) {
 		if (key === "id") {
 			break
 		}
-		if (value === "true" || value === "required") {
-			data[key] = true
-		}
-		if (value === "false" || value === "notRequired") {
-			data[key] = false
-		}
 		if (value != null && value !== "") {
 			data[key] = value
 		}
 	}
 
+	const { removedId, ...dataWithoutId } = data
 
-	const updatedCode = await prisma.bathroomCode.update({
+	const updatedLocation = await prisma.location.update({
 		where: {
 			id: Number(id),
 		},
 		data,
 	})
-	return NextResponse.json(updatedCode)
+	return NextResponse.json(updatedLocation)
 }

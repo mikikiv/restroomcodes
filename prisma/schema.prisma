@@ -20,14 +20,22 @@ model BathroomCode {
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
   deletedAt    DateTime?
+  locationId   Int?
+  location     Location? @relation(fields: [locationId], references: [id])
 }
 
 model Location {
-  id        Int      @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
   name      String
+  city      String
+  state     String
+  zipcode   String?
   address   String?
   latitude  Float?
   longitude Float?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  bathroomCodes BathroomCode[]
 }
