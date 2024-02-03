@@ -1,10 +1,12 @@
+import { sampleData } from "@/lib/testdata"
+
 export const getCodes = async () => {
 	try {
 		const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/codes`)
 		const data = await res.json()
 		return data
 	} catch (error) {
-		console.error(error)
+		return sampleData
 	}
 }
 
