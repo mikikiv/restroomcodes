@@ -1,14 +1,20 @@
 "use client"
 
-import { Box } from "@mantine/core"
+import { searchNewLocations } from "@/hooks/hooks"
+import { Box, Button, TextInput } from "@mantine/core"
+import { useForm } from "@mantine/form"
 import { useLocalStorage } from "@mantine/hooks"
 import mapboxgl from "mapbox-gl"
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 
 export default function MapDisplay() {
 	mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN as string
 
-	
+	const form = useForm({
+		initialValues: {
+			query: "",
+		},
+	})
 
 	const mapContainer = useRef<HTMLDivElement | null>(null)
 	const map = useRef<mapboxgl.Map | null>(null)
@@ -21,6 +27,26 @@ export default function MapDisplay() {
 			zoom: 9,
 		},
 	})
+	const [searchResults, setSearchResults] = useState([])
+	const [loading, setLoading] = useState(false)
+
+	const handleSearch = async () => {
+		setLoading(true)
+		try {
+			setSearchResults(
+				await searchNewLocations(
+					form.values.query,
+					map.current as mapboxgl.Map,
+				),
+			)
+		} catch (error) {
+			console.error(error)
+			return null
+		} finally {
+			form.reset()
+			setLoading(false)
+		}
+	}
 
 	useEffect(() => {
 		if (map.current || !mapContainer.current) return
@@ -47,14 +73,23 @@ export default function MapDisplay() {
 			})
 		})
 	})
-
-
+	useEffect(() => {
+		searchResults.map((location) => {
+			new mapboxgl.Marker()
+				.setLngLat(location.geometry.coordinates)
+				.addTo(map.current)
+		})
+	}, [searchResults])
 
 	return (
-		<Box
-			ref={mapContainer}
-			style={{ height: "400px", width: "100%" }}
-			className="map-container"
-		/>
+		<>
+			<TextInput {...form.getInputProps("query")} />
+			<Button onClick={() => handleSearch()}>Submit</Button>
+			<Box
+				ref={mapContainer}
+				style={{ height: "400px", width: "100%" }}
+				className="map-container"
+			/>
+		</>
 	)
 }
