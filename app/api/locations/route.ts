@@ -2,7 +2,14 @@ import { NextRequest, NextResponse } from "next/server"
 import prisma from "@/lib/prismadb"
 
 export async function GET(req: NextRequest) {
-	const searchableParams = ["id", "name", "city", "zipcode", "state"]
+	const searchableParams = [
+		"id",
+		"name",
+		"city",
+		"zipcode",
+		"state",
+		"providerId",
+	]
 	if (searchableParams.some((param) => req.nextUrl.searchParams.has(param))) {
 		const searchParams = req.nextUrl.searchParams
 

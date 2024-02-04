@@ -108,7 +108,7 @@ const CreateCode = ({ ...rest }) => {
 		return (
 			<>
 				<Paper {...rest}>
-					<Text>Report a new code</Text>
+					<Text>Report a new location and code</Text>
 					<Box>
 						<TextInput
 							w={"100%"}
