@@ -1,4 +1,4 @@
-import { sampleCodes } from "@/lib/testdata"
+import { sampleCodes, sampleLocations } from "@/lib/testdata"
 import mapboxgl from "mapbox-gl"
 
 export const getCodes = async () => {
@@ -26,6 +26,44 @@ export const createCode = async (input: FormData) => {
 	}
 }
 
+export const createLocation = async (
+	location: { [key: string]: any },
+	code: { [key: string]: any },
+) => {
+	const input = {
+		providerId: location.providerId,
+		name: location.name,
+		city: location.city,
+		state: location.state,
+		zipcode: location.zipcode,
+		address: location.address,
+		category: location.category,
+		latitude: location.latitude,
+		longitude: location.longitude,
+		bathroomCode: {
+			code: code.code,
+			required: code.required,
+		},
+	}
+
+	try {
+		const response = await fetch(
+			`${process.env.NEXT_PUBLIC_URL}/api/locations`,
+			{
+				method: "POST",
+				body: JSON.stringify(input),
+			},
+		)
+		if (!response.ok) {
+			throw new Error(`Submission error code: ${response.status}`)
+		}
+		return response
+	} catch (error) {
+		console.error("inhook", error)
+		return await error
+	}
+}
+
 export const searchNewLocations = async (
 	input: string,
 	proximity: mapboxgl.Map,
@@ -34,6 +72,10 @@ export const searchNewLocations = async (
 	const lng = proximity.getCenter().lng
 	const mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN as string
 	try {
+		if (process.env.NEXT_PUBLIC_URL === "http://localhost:3000") {
+			return sampleLocations
+		}
+
 		const response = await fetch(
 			`https://api.mapbox.com/geocoding/v5/mapbox.places/${input}.json?limit=5&proximity=${lng},${lat}&access_token=${mapboxToken}`,
 		)

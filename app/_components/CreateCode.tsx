@@ -2,38 +2,66 @@
 import {
 	Box,
 	Button,
+	Input,
 	Paper,
 	Radio,
 	RadioGroup,
+	Stack,
 	Text,
 	TextInput,
 } from "@mantine/core"
 import { useForm } from "@mantine/form"
-import { createCode, searchNewLocations } from "@/hooks/hooks"
+import { createCode, createLocation, searchNewLocations } from "@/hooks/hooks"
 import MapDisplay from "./MapDisplay"
 import { useRef, useState } from "react"
+import { Location } from "@prisma/client"
+
+
+type Context = {
+	id: string
+	mapbox_id: string
+	text: string
+}
 
 const CreateCode = ({ ...rest }) => {
 	const form = useForm({
 		initialValues: {
 			code: "",
 			codeRequired: true,
-			locationName: "",
-			locationStreet: "",
-			locationCity: "",
-			locationState: "",
 		},
 	})
 
 	const handleSubmit = async () => {
-		const data = new FormData()
-
-		for (const [key, value] of Object.entries(form.values)) {
-			if (!value) continue
-			data.append(key, value.toString())
+		const codeData = {
+			code: form.values.code,
+			codeRequired: form.values.codeRequired,
 		}
+
+		const locationData = {
+			providerId: selectedLocation.id,
+			name: selectedLocation.text,
+			latitude: selectedLocation.center[1],
+			longitude: selectedLocation.center[0],
+			// filter the context array to get the city, state, and zip based on the first text within the context array's id field
+			city: selectedLocation.context.filter((context: Context) =>
+				context.id.includes("place"),
+			)[0].text,
+			state: selectedLocation.context.filter((context: Context) =>
+				context.id.includes("region"),
+			)[0].text,
+			zip: selectedLocation.context.filter((context: Context) =>
+				context.id.includes("postcode"),
+			)[0].text,
+
+			address: selectedLocation.properties.address,
+			category: selectedLocation.properties.category,
+		}
+
+		console.log(codeData)
+		console.log(locationData)
+
 		try {
-			const res = await createCode(data)
+			const res = await createLocation(locationData, codeData)
 			//@ts-expect-error
 			if (!res?.ok) {
 				throw new Error("Failed to create code")
@@ -50,10 +78,14 @@ const CreateCode = ({ ...rest }) => {
 
 	const mapsearch = useForm({
 		initialValues: {
-			query: "",
+			query: "mcdonalds",
 		},
 	})
 	const [searchResults, setSearchResults] = useState<any[]>([])
+
+	const [searchComplete, setSearchComplete] = useState(false)
+
+	const [selectedLocation, setSelectedLocation] = useState<any>(null)
 
 	const handleSearch = async () => {
 		try {
@@ -67,9 +99,11 @@ const CreateCode = ({ ...rest }) => {
 			console.error(error)
 			return null
 		} finally {
+			setSearchComplete(true)
 			form.reset()
 		}
 	}
+
 	
 		return (
 			<>
@@ -94,8 +128,30 @@ const CreateCode = ({ ...rest }) => {
 					</Box>
 				</Paper>
 				<Box>
-					<TextInput {...mapsearch.getInputProps("query")} />
-					<Button onClick={() => handleSearch()}>Submit</Button>
+					{searchComplete === true ? (
+						<>
+							<Radio.Group>
+								{searchResults.map((result) => (
+									<Radio
+										type="radio"
+										key={result.id}
+										checked
+										value={result.id}
+										label={result.place_name}
+										onChange={() => setSelectedLocation(result)}
+									/>
+								))}
+							</Radio.Group>
+							<Text>
+								Search complete. Click on the map to add a new location
+							</Text>
+						</>
+					) : (
+						<>
+							<TextInput {...mapsearch.getInputProps("query")} />
+							<Button onClick={() => handleSearch()}>Submit</Button>
+						</>
+					)}
 					{map != null && (
 						<MapDisplay searchResults={searchResults} map={map} />
 					)}

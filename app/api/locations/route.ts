@@ -39,89 +39,59 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-	const formData = await req.formData()
-	const requiredLocationData: { [key: string]: FormDataEntryValue | null } = {
-		city: formData.get("city"),
-		state: formData.get("state"),
-		name: formData.get("name"),
-	}
-	const optionalLocationData = {
-		address: formData.get("address"),
-		zipcode: formData.get("zipcode"),
-	}
+	const body = await req.json()
 
-	// if missing a required field, return an error which tells the user which field is missing
-	for (const [key, value] of Object.entries(requiredLocationData)) {
-		if (value === null) {
-			return NextResponse.json({ error: `${key} is required` }, { status: 406 })
-		}
+	const requiredFields = ["name", "city", "state", "bathroomCode"]
+	const missingFields = requiredFields.filter((field) => !body[field])
+	if (missingFields.length > 0) {
+		return NextResponse.json(
+			{ error: `Missing required fields: ${missingFields.join(", ")}` },
+			{ status: 406 },
+		)
 	}
 
-	const data: any = {}
-
-	for (const [key, value] of formData.entries()) {
-		if (typeof value === "string" && (value == null || value?.trim() === "")) {
-			return NextResponse.json({ error: `${key} is required` }, { status: 406 })
-		}
-		data[key] = value
-	}
-
-	const location = await prisma.location.create({
-		data,
-	})
-	return NextResponse.json(location)
-}
-
-export async function DELETE(req: NextRequest) {
-	const id = (await req.formData()).get("id")
-	if (id === null) {
-		return NextResponse.json({ error: "Invalid id" }, { status: 406 })
-	}
 	try {
-		const locations = await prisma.location.update({
-			where: {
-				id: Number(id),
-				deletedAt: null,
-			},
+		const location = await prisma.location.create({
 			data: {
-				deletedAt: new Date(),
+				providerId: body.providerId,
+				name: body.name,
+				city: body.city,
+				state: body.state,
+				zipcode: body.zipcode,
+				address: body.address,
+				category: body.category,
+				latitude: body.latitude,
+				longitude: body.longitude,
+				bathroomCodes: {
+					create: {
+						code: body.bathroomCode.code,
+						required: body.bathroomCode.required,
+					},
+				},
 			},
 		})
-		return NextResponse.json(locations)
+		return NextResponse.json({ location }, { status: 201 })
 	} catch (error) {
-		return NextResponse.json(
-			{ error: "Location not found or already deleted" },
-			{ status: 404 },
-		)
+		return NextResponse.json({ error: error }, { status: 500 })
 	}
 }
 
 export async function PUT(req: NextRequest) {
-	const formData = await req.formData()
-	const id = formData.get("id")
+	const data = await req.json()
 
-	if (id === null) {
+	if (data.id === null) {
 		return NextResponse.json({ error: "Invalid id" }, { status: 406 })
-	}
-
-	const data: any = {}
-
-	for (const [key, value] of formData.entries()) {
-		if (key === "id") {
-			break
-		}
-		if (value != null && value !== "") {
-			data[key] = value
-		}
 	}
 
 	const { removedId, ...dataWithoutId } = data
 
 	const updatedLocation = await prisma.location.update({
 		where: {
-			id: Number(id),
+			id: Number(data.id),
 		},
-		data,
+		update: {
+			...dataWithoutId,
+		},
 	})
 	return NextResponse.json(updatedLocation)
 }
