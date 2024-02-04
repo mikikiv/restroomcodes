@@ -2,7 +2,6 @@
 import {
 	Box,
 	Button,
-	Container,
 	Paper,
 	Radio,
 	RadioGroup,
@@ -10,8 +9,9 @@ import {
 	TextInput,
 } from "@mantine/core"
 import { useForm } from "@mantine/form"
-import { createCode } from "@/hooks/hooks"
+import { createCode, searchNewLocations } from "@/hooks/hooks"
 import MapDisplay from "./MapDisplay"
+import { useRef, useState } from "react"
 
 const CreateCode = ({ ...rest }) => {
 	const form = useForm({
@@ -46,6 +46,30 @@ const CreateCode = ({ ...rest }) => {
 		}
 	}
 
+	const map = useRef<mapboxgl.Map>(null)
+
+	const mapsearch = useForm({
+		initialValues: {
+			query: "",
+		},
+	})
+	const [searchResults, setSearchResults] = useState<any[]>([])
+
+	const handleSearch = async () => {
+		try {
+			setSearchResults(
+				await searchNewLocations(
+					mapsearch.values.query,
+					map.current as mapboxgl.Map,
+				),
+			)
+		} catch (error) {
+			console.error(error)
+			return null
+		} finally {
+			form.reset()
+		}
+	}
 	
 		return (
 			<>
@@ -55,33 +79,6 @@ const CreateCode = ({ ...rest }) => {
 						<TextInput
 							w={"100%"}
 							placeholder="1234"
-							{...form.getInputProps("code")}
-						/>
-						<TextInput
-							w={"100%"}
-							withAsterisk
-							label="Location name"
-							placeholder="McDonalds"
-							{...form.getInputProps("code")}
-						/>
-						<TextInput
-							w={"100%"}
-							label="Location street address"
-							placeholder="100 Main St"
-							{...form.getInputProps("code")}
-						/>
-						<TextInput
-							w={"100%"}
-							withAsterisk
-							label="City"
-							placeholder="Portland"
-							{...form.getInputProps("code")}
-						/>
-						<TextInput
-							w={"100%"}
-							withAsterisk
-							label="State"
-							placeholder="Oregon"
 							{...form.getInputProps("code")}
 						/>
 						<RadioGroup
@@ -97,7 +94,11 @@ const CreateCode = ({ ...rest }) => {
 					</Box>
 				</Paper>
 				<Box>
-					<MapDisplay />
+					<TextInput {...mapsearch.getInputProps("query")} />
+					<Button onClick={() => handleSearch()}>Submit</Button>
+					{map != null && (
+						<MapDisplay searchResults={searchResults} map={map} />
+					)}
 				</Box>
 			</>
 		)

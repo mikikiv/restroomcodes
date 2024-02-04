@@ -31,7 +31,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts"
-  ],
+, "app/_components/MapDisplay.jsx"  ],
   "exclude": [
     "node_modules"
   ]
