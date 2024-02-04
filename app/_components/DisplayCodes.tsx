@@ -3,21 +3,22 @@ import { getCodes } from "@/hooks/hooks"
 import { BathroomCode } from "@prisma/client"
 
 const DisplayCodes = async () => {
-	const codes = await getCodes()
+		const codes = await getCodes()
+
+	const tableHeader: string[] = Object.keys(await codes[0])
+
+	const tableBody: string[][] = codes
+		.filter((results: BathroomCode) => {
+			return results.deletedAt === null
+		})
+		.map((code: BathroomCode) => {
+			return Object.values(code)
+		})
 
 	const tableData: TableData = {
 		caption: "Codes",
-		head: ["Code", "Required", "Created At", "Updated At", "Valid", "Verified"],
-		body: codes.map((code: BathroomCode) => {
-			return [
-				code.code,
-				code.codeRequired.toString(),
-				code.createdAt.toLocaleString(),
-				code.updatedAt.toLocaleString(),
-				code.valid,
-				code.verified,
-			]
-		}),
+		head: tableHeader,
+		body: tableBody,
 	}
 
 	return (

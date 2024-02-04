@@ -46,37 +46,28 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-	const formData = await req.formData()
-	const code = formData.get("code")
-	const codeRequired = formData.get("codeRequired")
+	const data = await req.json()
 
 	if (
-		(code === undefined || code === "") &&
-		(codeRequired === undefined || codeRequired === "")
+		(data.code === undefined || data.code === "") &&
+		(data.codeRequired === undefined || data.codeRequired === "")
 	) {
 		new NextResponse()
 		return NextResponse.json({ error: "Invalid code" }, { status: 406 })
 	}
 
-	const data: any = {}
+	if (data.locationId == null) {
+		return NextResponse.json({ error: "Invalid locationId" }, { status: 406 })
+	}
 
-	for (const [key, value] of formData.entries()) {
-		if (value == null) {
-			break
-		}
-		if (value === "true" || value === "required") {
-			data[key] = true
-			break
-		}
-		if (value === "false" || value === "notRequired") {
-			data[key] = false
-			break
-		}
-		data[key] = value
+	const submitData: { [key: string]: any } = {}
+
+	for (const [key, value] of Object.entries(data)) {
+		submitData[key] = value
 	}
 
 	const bathroomCode = await prisma.bathroomCode.create({
-		data,
+		data: submitData,
 	})
 	return NextResponse.json(bathroomCode)
 }
