@@ -1,5 +1,3 @@
-"use client"
-
 import { searchNewLocations } from "@/hooks/hooks"
 import { Box, Button, TextInput } from "@mantine/core"
 import { useForm } from "@mantine/form"
@@ -27,7 +25,7 @@ export default function MapDisplay() {
 			zoom: 9,
 		},
 	})
-	const [searchResults, setSearchResults] = useState([])
+	const [searchResults, setSearchResults] = useState<any[]>([])
 	const [loading, setLoading] = useState(false)
 
 	const handleSearch = async () => {
@@ -74,11 +72,13 @@ export default function MapDisplay() {
 		})
 	})
 	useEffect(() => {
-		searchResults.map((location) => {
-			new mapboxgl.Marker()
-				.setLngLat(location.geometry.coordinates)
-				.addTo(map.current)
-		})
+		searchResults.map(
+			(location) =>
+				map.current &&
+				new mapboxgl.Marker()
+					.setLngLat(location.geometry.coordinates)
+					.addTo(map.current),
+		)
 	}, [searchResults])
 
 	return (
