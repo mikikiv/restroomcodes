@@ -7,7 +7,7 @@ export default function HomePage() {
 		<>
 			<Container p={"lg"}>
 				<Stack gap={30}>
-					<CreateCode maw={400} mx={"auto"} />
+					<CreateCode mx={"auto"} />
 					<DisplayCodes />
 				</Stack>
 			</Container>
