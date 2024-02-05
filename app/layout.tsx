@@ -35,7 +35,7 @@ export default function RootLayout({ children }: { children: any }) {
 				<MantineProvider theme={theme}>
 					<AppShell header={{ height: 60 }}>
 						<AppShellHeader>
-							<Title>RestroomCodes.com</Title>
+							<Title>RestroomCodes</Title>
 						</AppShellHeader>
 						<AppShellMain>{children}</AppShellMain>
 					</AppShell>
