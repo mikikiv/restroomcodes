@@ -2,6 +2,7 @@
 import {
 	Box,
 	Button,
+	Flex,
 	Input,
 	Paper,
 	Radio,
@@ -13,8 +14,8 @@ import {
 import { useForm } from "@mantine/form"
 import { createCode, createLocation, searchNewLocations } from "@/hooks/hooks"
 import MapDisplay from "./MapDisplay"
-import { useRef, useState } from "react"
-import { Location } from "@prisma/client"
+import { useEffect, useRef, useState } from "react"
+
 
 
 type Context = {
@@ -104,29 +105,14 @@ const CreateCode = ({ ...rest }) => {
 		}
 	}
 
+
+
 	
-		return (
-			<>
-				<Paper {...rest}>
-					<Text>Report a new location and code</Text>
-					<Box>
-						<TextInput
-							w={"100%"}
-							placeholder="1234"
-							{...form.getInputProps("code")}
-						/>
-						<RadioGroup
-							withAsterisk
-							{...form.getInputProps("codeRequired", { type: "checkbox" })}
-						>
-							<Radio value="required" label="Code is required" />
-							<Radio value="notRequired" label="Code is not required" />
-						</RadioGroup>
-						<Button fullWidth mt={"sm"} onClick={() => handleSubmit()}>
-							Create Code
-						</Button>
-					</Box>
-				</Paper>
+	return (
+		<>
+			<Paper {...rest}>
+				<Text>Report a new location and code</Text>
+				{map != null && <MapDisplay searchResults={searchResults} map={map} />}
 				<Box>
 					{searchComplete === true ? (
 						<>
@@ -142,22 +128,34 @@ const CreateCode = ({ ...rest }) => {
 									/>
 								))}
 							</Radio.Group>
-							<Text>
-								Search complete. Click on the map to add a new location
-							</Text>
+							<TextInput
+								w={"100%"}
+								placeholder="1234"
+								{...form.getInputProps("code")}
+							/>
+							<RadioGroup
+								withAsterisk
+								{...form.getInputProps("codeRequired", { type: "checkbox" })}
+							>
+								<Radio value="required" label="Code is required" />
+								<Radio value="notRequired" label="Code is not required" />
+							</RadioGroup>
+							<Button fullWidth mt={"sm"} onClick={() => handleSubmit()}>
+								Create Code
+							</Button>
 						</>
 					) : (
 						<>
-							<TextInput {...mapsearch.getInputProps("query")} />
-							<Button onClick={() => handleSearch()}>Submit</Button>
+							<Flex bg={"#eee"} justify={"center"} gap={2} h={100}>
+								<TextInput w={300} {...mapsearch.getInputProps("query")} />
+								<Button onClick={() => handleSearch()}>Submit</Button>
+							</Flex>
 						</>
 					)}
-					{map != null && (
-						<MapDisplay searchResults={searchResults} map={map} />
-					)}
 				</Box>
-			</>
-		)
+			</Paper>
+		</>
+	)
 }
 export default CreateCode
 

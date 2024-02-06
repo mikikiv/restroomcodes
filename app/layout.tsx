@@ -7,6 +7,12 @@ import {
 	Title,
 	AppShellHeader,
 	AppShellMain,
+	ButtonGroup,
+	Button,
+	NavLink,
+	Stack,
+	AppShellNavbar,
+	AppShellSection,
 } from "@mantine/core"
 import { theme } from "../theme"
 
@@ -33,11 +39,21 @@ export default function RootLayout({ children }: { children: any }) {
 			</head>
 			<body>
 				<MantineProvider theme={theme}>
-					<AppShell header={{ height: 60 }}>
+					<AppShell
+						header={{ height: 60 }}
+						navbar={{ width: 100, breakpoint: 360 }}
+					>
 						<AppShellHeader>
 							<Title>RestroomCodes</Title>
 						</AppShellHeader>
-						<AppShellMain>{children}</AppShellMain>
+						<AppShellMain>
+							<AppShellSection>{children}</AppShellSection>
+						</AppShellMain>
+						<AppShellNavbar>
+							<NavLink href="/" label="Browse" />
+							<NavLink href="/codes/report" label="Report" />
+							<NavLink href="/codes/search" label="Search" />
+						</AppShellNavbar>
 					</AppShell>
 				</MantineProvider>
 			</body>

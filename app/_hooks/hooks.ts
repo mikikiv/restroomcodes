@@ -11,6 +11,18 @@ export const getCodes = async () => {
 	}
 }
 
+export const searchCodes = async (searchField: string, value: string) => {
+	try {
+		const res = await fetch(
+			`${process.env.NEXT_PUBLIC_URL}/api/codes?${searchField}=${value}`,
+		)
+		const data = await res.json()
+		return data
+	} catch (error) {
+		return sampleCodes
+	}
+}
+
 export const createCode = async (input: FormData) => {
 	try {
 		const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/codes`, {
@@ -72,9 +84,9 @@ export const searchNewLocations = async (
 	const lng = proximity.getCenter().lng
 	const mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN as string
 	try {
-		if (process.env.NEXT_PUBLIC_URL === "http://localhost:3000") {
-			return sampleLocations
-		}
+		// if (process.env.NEXT_PUBLIC_URL === "http://localhost:3000") {
+		// 	return sampleLocations
+		// }
 
 		const response = await fetch(
 			`https://api.mapbox.com/geocoding/v5/mapbox.places/${input}.json?limit=5&proximity=${lng},${lat}&access_token=${mapboxToken}`,
@@ -86,11 +98,21 @@ export const searchNewLocations = async (
 	}
 }
 
-export const searchExistingLocations = async (input: string) => {
+export const searchExistingLocations = async (field: string, input: string) => {
 	try {
 		const response = await fetch(
-			`${process.env.NEXT_PUBLIC_URL}/api/locations?input=${input}`,
+			`${process.env.NEXT_PUBLIC_URL}/api/locations?${field}=${input}`,
 		)
+		const data = await response.json()
+		return data
+	} catch (error) {
+		return error as Error
+	}
+}
+
+export const getExistingLocations = async () => {
+	try {
+		const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/locations`)
 		const data = await response.json()
 		return data
 	} catch (error) {

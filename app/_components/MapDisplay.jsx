@@ -1,3 +1,4 @@
+"use client"
 import { searchNewLocations } from "@/hooks/hooks"
 import { Box, Button, TextInput } from "@mantine/core"
 import { useForm } from "@mantine/form"
@@ -6,6 +7,7 @@ import mapboxgl from "mapbox-gl"
 import { useEffect, useRef, useState } from "react"
 
 export default function MapDisplay({ searchResults, map }) {
+
 	mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN
 
 	const mapContainer = useRef(null)
