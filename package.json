@@ -9,7 +9,7 @@
 		"lint": "next lint",
 		"format": "npx @biomejs/biome format --write ./app",
 		"prisma-migrate": " prisma format &&  prisma validate &&  prisma migrate dev",
-		"postinstall": "prisma generate"
+		"vercel-build": "prisma generate && prisma migrate deploy && next build"
 	},
 	"dependencies": {
 		"@mantine/core": "7.4.2",
