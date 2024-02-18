@@ -21,8 +21,9 @@ builder.prismaObject("Location", {
 })
 
 builder.queryField("locations", (t) =>
-	t.prismaField({
-		type: ["Location"],
+	t.prismaConnection({
+		type: "Location",
+		cursor: "id",
 		resolve: (query, _parent, _args, _ctx, _info) =>
 			prisma.location.findMany({ ...query }),
 	}),

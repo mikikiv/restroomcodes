@@ -18,8 +18,9 @@ builder.prismaObject("BathroomCode", {
 })
 
 builder.queryField("bathroomCodes", (t) =>
-	t.prismaField({
-		type: ["BathroomCode"],
+	t.prismaConnection({
+		type: "BathroomCode",
+		cursor: "id",
 		args: {
 			locationId: t.arg.id(),
 		},

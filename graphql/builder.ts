@@ -3,6 +3,7 @@ import PrismaPlugin from "@pothos/plugin-prisma"
 import type PrismaTypes from "@pothos/plugin-prisma/generated"
 import prisma from "@/lib/prismadb"
 import { DateTimeResolver } from "graphql-scalars"
+import RelayPlugin from "@pothos/plugin-relay"
 
 export const builder = new SchemaBuilder<{
 	PrismaTypes: PrismaTypes
@@ -13,7 +14,8 @@ export const builder = new SchemaBuilder<{
 		}
 	}
 }>({
-	plugins: [PrismaPlugin],
+	plugins: [PrismaPlugin, RelayPlugin],
+	relayOptions: {},
 	prisma: {
 		client: prisma,
 	},
