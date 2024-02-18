@@ -1,0 +1,51 @@
+type Query {
+  Locations: [Location]!
+  Location(id: Int!): Location
+  BathroomCodes: [BathroomCode]!
+  BathroomCode(id: Int!): BathroomCode
+}
+
+type Mutation {
+  createLocation(
+    providerId: String, 
+    name: String,
+    city: String,
+    state: String,
+    zipcode: String,
+    address: String,
+    category: String,
+    latitude: Float,
+    longitude: Float
+  ): Location!
+  
+  deleteLocation(id: ID!): Location!
+
+  updateLocation(
+    providerId: String,
+    name: String,
+    city: String,
+    state: String,
+    zipcode: String,
+    address: String,
+    category: String,
+    latitude: Float,
+    longitude: Float,
+  ): Location!
+
+  createBathroomCode(
+    codeRequired: Boolean,
+    code: String,
+    valid: Boolean,
+    verified: Boolean,
+    locationId: Int
+  ): BathroomCode!
+  
+  deleteBathroomCode(id: ID!): BathroomCode!
+
+  updateBathroomCode(
+    codeRequired: Boolean,
+    code: String,
+    valid: Boolean,
+    verified: Boolean,
+    locationId: Int): BathroomCode!
+}
