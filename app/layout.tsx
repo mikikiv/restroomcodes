@@ -7,21 +7,21 @@ import {
 	Title,
 	AppShellHeader,
 	AppShellMain,
-	ButtonGroup,
-	Button,
 	NavLink,
-	Stack,
 	AppShellNavbar,
 	AppShellSection,
 } from "@mantine/core"
 import { theme } from "../theme"
+import { ApolloWrapper } from "./ApolloWrapper"
 
 export const metadata = {
 	title: "Restroom Codes",
 	description: "Get and share restroom codes/requirements",
 }
 
+
 export default function RootLayout({ children }: { children: any }) {
+
 	return (
 		<html lang="en">
 			<head>
@@ -39,24 +39,27 @@ export default function RootLayout({ children }: { children: any }) {
 			</head>
 			<body>
 				<MantineProvider theme={theme}>
-					<AppShell
-						header={{ height: 60 }}
-						navbar={{ width: 100, breakpoint: 360 }}
-					>
-						<AppShellHeader>
-							<Title>RestroomCodes</Title>
-						</AppShellHeader>
-						<AppShellMain>
-							<AppShellSection>{children}</AppShellSection>
-						</AppShellMain>
-						<AppShellNavbar>
-							<NavLink href="/" label="Browse" />
-							<NavLink href="/codes/report" label="Report" />
-							<NavLink href="/codes/search" label="Search" />
-						</AppShellNavbar>
-					</AppShell>
+					<ApolloWrapper>
+						<AppShell
+							header={{ height: 60 }}
+							navbar={{ width: 100, breakpoint: 360 }}
+						>
+							<AppShellHeader>
+								<Title>RestroomCodes</Title>
+							</AppShellHeader>
+							<AppShellMain>
+								<AppShellSection>{children}</AppShellSection>
+							</AppShellMain>
+							<AppShellNavbar>
+								<NavLink href="/" label="Browse" />
+								<NavLink href="/codes/report" label="Report" />
+								<NavLink href="/codes/search" label="Search" />
+							</AppShellNavbar>
+						</AppShell>
+					</ApolloWrapper>
 				</MantineProvider>
 			</body>
 		</html>
 	)
 }
+

@@ -12,6 +12,8 @@
 		"vercel-build": "prisma generate && prisma migrate deploy && next build"
 	},
 	"dependencies": {
+		"@apollo/client": "^3.9.5",
+		"@apollo/experimental-nextjs-app-support": "^0.8.0",
 		"@mantine/core": "7.4.2",
 		"@mantine/form": "^7.4.2",
 		"@mantine/hooks": "7.4.2",
