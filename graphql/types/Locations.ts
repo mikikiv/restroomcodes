@@ -20,7 +20,7 @@ builder.prismaObject("Location", {
 	}),
 })
 
-builder.queryField("Locations", (t) =>
+builder.queryField("locations", (t) =>
 	t.prismaField({
 		type: ["Location"],
 		resolve: (query, _parent, _args, _ctx, _info) =>

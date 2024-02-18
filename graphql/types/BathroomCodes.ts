@@ -1,3 +1,4 @@
+import prisma from "@/lib/prismadb"
 import { builder } from "graphql/builder"
 
 builder.prismaObject("BathroomCode", {
@@ -15,3 +16,14 @@ builder.prismaObject("BathroomCode", {
 		}),
 	}),
 })
+
+builder.queryField("bathroomCodes", (t) =>
+	t.prismaField({
+		type: ["BathroomCode"],
+		args: {
+			locationId: t.arg.id(),
+		},
+		resolve: (query, _parent, _ctx, _info) =>
+			prisma.bathroomCode.findMany({ ...query }),
+	}),
+)

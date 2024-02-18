@@ -2,10 +2,10 @@ import prisma from "@/lib/prismadb"
 
 export const resolvers = {
 	Query: {
-		Locations: () => {
+		locations: () => {
 			return prisma.location.findMany()
 		},
-		BathroomCodes: () => {
+		bathroomCodes: () => {
 			return prisma.bathroomCode.findMany()
 		},
 	},

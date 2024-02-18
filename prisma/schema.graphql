@@ -1,8 +1,9 @@
 type Query {
-  Locations: [Location]!
-  Location(id: Int!): Location
-  BathroomCodes: [BathroomCode]!
-  BathroomCode(id: Int!): BathroomCode
+  locations: [Location]!
+  location(id: Int!): Location
+  bathroomCodes: [BathroomCode]!
+  bathroomCode(id: Int!): BathroomCode
+  bathroomCodeInLocation(locationId: Int!): BathroomCode
 }
 
 type Mutation {
