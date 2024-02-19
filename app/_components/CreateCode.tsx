@@ -3,18 +3,17 @@ import {
 	Box,
 	Button,
 	Flex,
-	Input,
 	Paper,
 	Radio,
 	RadioGroup,
-	Stack,
 	Text,
 	TextInput,
+	Tooltip,
 } from "@mantine/core"
 import { useForm } from "@mantine/form"
-import { createCode, createLocation, searchNewLocations } from "@/hooks/hooks"
+import { createLocation, searchNewLocations } from "@/hooks/hooks"
 import MapDisplay from "./MapDisplay"
-import { useEffect, useRef, useState } from "react"
+import { useRef, useState } from "react"
 
 
 
@@ -140,9 +139,16 @@ const CreateCode = ({ ...rest }) => {
 								<Radio value="required" label="Code is required" />
 								<Radio value="notRequired" label="Code is not required" />
 							</RadioGroup>
-							<Button fullWidth mt={"sm"} onClick={() => handleSubmit()}>
-								Create Code
-							</Button>
+							<Tooltip label="currently not working">
+								<Button
+									disabled
+									fullWidth
+									mt={"sm"}
+									onClick={() => handleSubmit()}
+								>
+									Create Code
+								</Button>
+							</Tooltip>
 						</>
 					) : (
 						<>
