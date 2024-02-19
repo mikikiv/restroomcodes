@@ -1,11 +1,12 @@
 import { Container, Stack } from "@mantine/core"
-import LocationsTable from "./_components/LocationsTable"
+import DataTable from "./_components/DataTable"
 
 export default function HomePage() {
 	return (
 		<Container p={"lg"}>
 			<Stack gap={30}>
-				<LocationsTable />
+				<DataTable database="locations" />
+				<DataTable database="bathroomCodes" />
 			</Stack>
 		</Container>
 	)

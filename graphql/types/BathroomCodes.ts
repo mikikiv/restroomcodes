@@ -22,9 +22,18 @@ builder.queryField("bathroomCodes", (t) =>
 		type: "BathroomCode",
 		cursor: "id",
 		args: {
-			locationId: t.arg.id(),
+			locationId: t.arg.int({ required: false }),
+			codeRequired: t.arg.boolean({ required: false }),
 		},
-		resolve: (query, _parent, _ctx, _info) =>
-			prisma.bathroomCode.findMany({ ...query }),
+		resolve: (query, _parent, args, _ctx, _info) =>
+			prisma.bathroomCode.findMany({
+				...query,
+				where: {
+					...(args.locationId && { locationId: args.locationId }),
+					...(args.codeRequired !== undefined && {
+						codeRequired: args.codeRequired,
+					}),
+				},
+			}),
 	}),
 )

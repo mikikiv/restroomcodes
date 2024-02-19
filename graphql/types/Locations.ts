@@ -24,7 +24,21 @@ builder.queryField("locations", (t) =>
 	t.prismaConnection({
 		type: "Location",
 		cursor: "id",
-		resolve: (query, _parent, _args, _ctx, _info) =>
-			prisma.location.findMany({ ...query }),
+		args: {
+			providerId: t.arg.string({ required: false }),
+			category: t.arg.string({ required: false }),
+			city: t.arg.string({ required: false }),
+		},
+		resolve: (query, _parent, args, _ctx, _info) =>
+			prisma.location.findMany({
+				...query,
+				where: {
+					...(args.providerId && { providerId: args.providerId }),
+					...(args.category && {
+						category: args.category,
+					}),
+					...(args.city && { city: args.city }),
+				},
+			}),
 	}),
 )
