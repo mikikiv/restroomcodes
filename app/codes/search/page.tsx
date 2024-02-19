@@ -1,12 +1,16 @@
 "use client"
-import DisplayCodes from "@/components/DisplayTable"
+import DataTable from "@/components/DataTable"
+import { AllBathroomCodesQuery, AllLocationsQuery } from "@/hooks/queries"
 import { Box, Button, Group, Select, Text, TextInput } from "@mantine/core"
+import { DocumentNode } from "graphql"
 import { Suspense, useEffect, useState } from "react"
 const Page = () => {
 	const [searched, setSearched] = useState(false)
-	const [searchType, setSearchType] = useState<"location" | "code">("location")
+	const [searchType, setSearchType] = useState<"locations" | "bathroomCodes">(
+		"locations",
+	)
 	const [searchField, setSearchField] = useState(
-		searchType === "location" ? "name" : "code",
+		searchType === "locations" ? "name" : "bathroomCodes",
 	)
 	const locationSearchFieldOptions = [
 		{ label: "Name", value: "name", type: "text" },
@@ -42,9 +46,9 @@ const Page = () => {
 	})
 
 	useEffect(() => {
-		setSearchField(searchType === "location" ? "name" : "code")
+		setSearchField(searchType === "locations" ? "name" : "bathroomCodes")
 		setSearchOptions(
-			searchType === "location"
+			searchType === "locations"
 				? locationSearchFieldOptions
 				: codeSearchFieldOptions,
 		)
@@ -56,19 +60,19 @@ const Page = () => {
 				<Select
 					label="Search Type"
 					data={[
-						{ label: "Location", value: "location" },
-						{ label: "Code", value: "code" },
+						{ label: "Locations", value: "locations" },
+						{ label: "Codes", value: "bathroomCodes" },
 					]}
 					allowDeselect={false}
 					value={searchType}
 					onChange={(selection) =>
-						setSearchType(selection as "location" | "code")
+						setSearchType(selection as "locations" | "bathroomCodes")
 					}
 				/>
 				<Select
 					label="Search Field"
 					data={
-						searchType === "location"
+						searchType === "locations"
 							? locationSearchFieldOptions
 							: codeSearchFieldOptions
 					}
@@ -111,11 +115,7 @@ const Page = () => {
 			</Group>
 			{searched ? (
 				<Suspense>
-					<DisplayCodes
-						database={searchQuery.searchType as "location" | "code"}
-						searchField={searchQuery.searchField}
-						searchValue={searchQuery.searchValue}
-					/>
+					<DataTable database={searchType} />
 				</Suspense>
 			) : (
 				<Text> Nothing yet </Text>

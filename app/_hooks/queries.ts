@@ -47,7 +47,7 @@ const BathroomCodeFields = gql`
 
 export const AllBathroomCodesQuery = gql`
   ${BathroomCodeFields}
-	query allBathroomCodesQuery ($first: Int, $after: ID){
+	query allBathroomCodes ($first: Int, $after: ID){
 		bathroomCodes(first: $first, after: $after){
 			pageInfo{
 				endCursor
@@ -63,11 +63,23 @@ export const AllBathroomCodesQuery = gql`
 	}
 `
 
-export const BathroomCodesByLocationQuery = gql`
+export const BathroomCodesQuery = (
+	locationId?: number,
+	codeRequired?: boolean,
+) => gql`
   ${BathroomCodeFields}
-  query bathroomCodesByLocationQuery ($locationId: Int){
-    bathroomCodes(locationId: $locationId){
-      ...BathroomCodeFields
+  query bathroomCodesQuery($codeRequired: Boolean){
+    bathroomCodes(first: $first, after: $after, codeRequired: ${codeRequired}){
+      pageInfo{
+				endCursor
+				hasNextPage
+			}
+			edges{
+				cursor  
+				node{
+          ...BathroomCodeFields
+        }
+      }
     }
   }
 `
