@@ -1,14 +1,14 @@
 "use client"
-import { AllBathroomCodesQuery, AllLocationsQuery } from "@/hooks/queries"
+import { AllRestroomCodesQuery, AllLocationsQuery } from "@/hooks/queries"
 import { useQuery, useMutation } from "@apollo/client"
 import { Button, LoadingOverlay, Table, TableData } from "@mantine/core"
-import { BathroomCode, Location } from "@prisma/client"
+import { RestroomCode, Location } from "@prisma/client"
 
 export default function DataTable({
 	database,
-}: { database: "locations" | "bathroomCodes" }) {
+}: { database: "locations" | "restroomCodes" }) {
 	const { data, loading, error, fetchMore } = useQuery(
-		database === "locations" ? AllLocationsQuery : AllBathroomCodesQuery,
+		database === "locations" ? AllLocationsQuery : AllRestroomCodesQuery,
 		{
 			variables: { first: 10 },
 		},
@@ -23,7 +23,7 @@ export default function DataTable({
 		head: Object.keys(data[database].edges[0].node), // get the table head from the first node
 		body:
 			// an array of arrays that represent the table body
-			data[database].edges.map((edge: { node: Location | BathroomCode }) => {
+			data[database].edges.map((edge: { node: Location | RestroomCode }) => {
 				return Object.values(edge.node).map((value) => String(value))
 			}),
 	}

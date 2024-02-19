@@ -16,7 +16,7 @@ builder.prismaObject("Location", {
 		category: t.exposeString("category", { nullable: true }),
 		latitude: t.exposeFloat("latitude", { nullable: true }),
 		longitude: t.exposeFloat("longitude", { nullable: true }),
-		bathroomCodes: t.relation("bathroomCodes"),
+		restroomCodes: t.relation("restroomCodes"),
 	}),
 })
 

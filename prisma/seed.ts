@@ -14,7 +14,7 @@ async function main() {
 			category: "fast food",
 			latitude: 37.983318,
 			longitude: -122.329803,
-			bathroomCodes: {
+			restroomCodes: {
 				create: [
 					{
 						valid: false,
