@@ -3,7 +3,7 @@ import DataTable from "@/components/DataTable"
 import { Container, Group, Select } from "@mantine/core"
 import { Suspense, useState } from "react"
 const Page = () => {
-	const [searchType, setSearchType] = useState<"locations" | "bathroomCodes">(
+	const [searchType, setSearchType] = useState<"locations" | "restroomCodes">(
 		"locations",
 	)
 
@@ -14,12 +14,12 @@ const Page = () => {
 					label="Search Type"
 					data={[
 						{ label: "Locations", value: "locations" },
-						{ label: "Codes", value: "bathroomCodes" },
+						{ label: "Codes", value: "restroomCodes" },
 					]}
 					allowDeselect={false}
 					value={searchType}
 					onChange={(selection) =>
-						setSearchType(selection as "locations" | "bathroomCodes")
+						setSearchType(selection as "locations" | "restroomCodes")
 					}
 				/>
 			</Group>

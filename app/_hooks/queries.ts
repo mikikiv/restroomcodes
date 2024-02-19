@@ -32,8 +32,8 @@ export const AllLocationsQuery = gql`
   }
 `
 
-const BathroomCodeFields = gql`
-  fragment BathroomCodeFields on BathroomCode {
+const RestroomCodeFields = gql`
+  fragment RestroomCodeFields on RestroomCode {
     id
     code
     codeRequired
@@ -45,10 +45,10 @@ const BathroomCodeFields = gql`
   }
 `
 
-export const AllBathroomCodesQuery = gql`
-  ${BathroomCodeFields}
-	query allBathroomCodes ($first: Int, $after: ID){
-		bathroomCodes(first: $first, after: $after){
+export const AllRestroomCodesQuery = gql`
+  ${RestroomCodeFields}
+	query allRestroomCodes ($first: Int, $after: ID){
+		restroomCodes(first: $first, after: $after){
 			pageInfo{
 				endCursor
 				hasNextPage
@@ -56,20 +56,20 @@ export const AllBathroomCodesQuery = gql`
 			edges{
 				cursor  
 				node{
-					...BathroomCodeFields
+					...RestroomCodeFields
 				}
 			}
 		}
 	}
 `
 
-export const BathroomCodesQuery = (
+export const RestroomCodesQuery = (
 	locationId?: number,
 	codeRequired?: boolean,
 ) => gql`
-  ${BathroomCodeFields}
-  query bathroomCodesQuery($codeRequired: Boolean){
-    bathroomCodes(first: $first, after: $after, codeRequired: ${codeRequired}){
+  ${RestroomCodeFields}
+  query restroomCodesQuery($codeRequired: Boolean){
+    restroomCodes(first: $first, after: $after, codeRequired: ${codeRequired}){
       pageInfo{
 				endCursor
 				hasNextPage
@@ -77,7 +77,7 @@ export const BathroomCodesQuery = (
 			edges{
 				cursor  
 				node{
-          ...BathroomCodeFields
+          ...RestroomCodeFields
         }
       }
     }

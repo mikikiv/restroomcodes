@@ -5,8 +5,8 @@ export const resolvers = {
 		locations: () => {
 			return prisma.location.findMany()
 		},
-		bathroomCodes: () => {
-			return prisma.bathroomCode.findMany()
+		restroomCodes: () => {
+			return prisma.restroomCode.findMany()
 		},
 	},
 }

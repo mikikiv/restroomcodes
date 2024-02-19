@@ -52,7 +52,7 @@ export const createLocation = async (
 		category: location.category,
 		latitude: location.latitude,
 		longitude: location.longitude,
-		bathroomCode: {
+		restroomCode: {
 			code: code.code,
 			required: code.required,
 		},

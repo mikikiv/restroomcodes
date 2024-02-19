@@ -6,7 +6,7 @@ export default function HomePage() {
 		<Container p={"lg"}>
 			<Stack gap={30}>
 				<DataTable database="locations" />
-				<DataTable database="bathroomCodes" />
+				<DataTable database="restroomCodes" />
 			</Stack>
 		</Container>
 	)
